@@ -5,7 +5,7 @@ self.importScripts('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js', '
 
 const apiOptions = {
   // Point to the compressed clang binary. The API will use this filename.
-  clang: 'clang.gz',
+  clang: 'clang.wasm.gz',
   async readBuffer(filename) {
     const response = await fetch(filename); 
     return response.ok ? response.arrayBuffer() : new ArrayBuffer(0);
