@@ -10,6 +10,7 @@ const languageSelector = document.getElementById('languageSelector');
 const copyCodeButton = document.getElementById('copyCodeBtn');
 const downloadButton = document.getElementById('downloadBtn');
 const shareButton = document.getElementById('shareBtn');
+const formatCodeButton = document.getElementById('formatCodeBtn');
 const settingsButton = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const closeSettingsButton = document.getElementById('closeSettingsBtn');
@@ -24,6 +25,10 @@ const spinner = document.getElementById('spinner');
 
 let editorReady = false;
 let workerReady = false;
+
+function applyTheme(theme) {
+    document.body.dataset.theme = theme === 'vs' ? 'light' : 'dark';
+}
 
 function hideLoaderIfReady() {
     if (editorReady && workerReady) {
@@ -174,7 +179,8 @@ require(['vs/editor/editor.main'], function () {
     const savedFontSize = parseInt(localStorage.getItem(LS_FONT_SIZE_KEY) || DEFAULT_FONT_SIZE, 10);
     const savedTimeout = parseInt(localStorage.getItem(LS_TIMEOUT_KEY) || DEFAULT_TIMEOUT, 10);
 
-    // Apply saved settings to the settings modal inputs
+    // Apply saved settings to the UI
+    applyTheme(savedTheme);
     editorThemeSelector.value = savedTheme;
     fontSizeInput.value = savedFontSize;
     timeoutInput.value = savedTimeout;
@@ -200,6 +206,25 @@ require(['vs/editor/editor.main'], function () {
     });
     stdinBox.addEventListener('input', () => localStorage.setItem(LS_STDIN_KEY, stdinBox.value));
 
+    // --- Code Formatting Logic ---
+    formatCodeButton.addEventListener('click', async () => {
+        if (!editor) return;
+
+        const formatAction = editor.getAction('editor.action.formatDocument');
+
+        if (formatAction) {
+            try {
+                await formatAction.run();
+            } catch (e) {
+                console.error("Auto-formatting failed during execution:", e);
+                alert("An error occurred while formatting the code.");
+            }
+        } else {
+            alert("Auto-formatting is not available for this language in the current editor setup.");
+            console.warn("Attempted to format, but no DocumentFormattingEditProvider is registered for this language.");
+        }
+    });
+
     // --- Settings Modal Logic ---
     settingsButton.addEventListener('click', () => {
         settingsModal.classList.add('visible');
@@ -220,6 +245,7 @@ require(['vs/editor/editor.main'], function () {
         const newTheme = editorThemeSelector.value;
         editor.updateOptions({ theme: newTheme });
         localStorage.setItem(LS_THEME_KEY, newTheme);
+        applyTheme(newTheme);
     });
 
     fontSizeInput.addEventListener('input', () => {
@@ -243,8 +269,9 @@ require(['vs/editor/editor.main'], function () {
         fontSizeInput.value = DEFAULT_FONT_SIZE;
         timeoutInput.value = DEFAULT_TIMEOUT;
 
-        // Update editor
+        // Update editor and UI theme
         editor.updateOptions({ theme: DEFAULT_THEME, fontSize: DEFAULT_FONT_SIZE });
+        applyTheme(DEFAULT_THEME);
 
         // Clear from localStorage
         localStorage.removeItem(LS_THEME_KEY);

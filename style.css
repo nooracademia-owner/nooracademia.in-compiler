@@ -9,7 +9,21 @@
     --border-color: #333333;
     --header-bg-color: #0d1117;
     --error-color: #f44336;
-    --header-text-color: #e0e0e0;
+    --header-text-color: #e0e0e0; 
+    --button-hover-bg: #3a3d41; /* For secondary buttons */
+}
+
+body[data-theme="light"] {
+    --bg-color: #f4f5f7;
+    --primary-surface-color: #ffffff;
+    --secondary-surface-color: #e5e7eb;
+    --text-color: #111827;
+    --secondary-text-color: #6b7280;
+    --border-color: #d1d5db;
+    --header-bg-color: #ffffff;
+    --header-text-color: #111827;
+    --error-color: #dc2626;
+    --button-hover-bg: #d1d5db; /* For secondary buttons */
 }
 
 * {
@@ -249,7 +263,7 @@ textarea:focus {
     margin-bottom: 0;
 }
 
-#copyBtn {
+.editor-control-btn {
     background-color: var(--secondary-surface-color);
     color: var(--secondary-text-color);
     border: 1px solid var(--border-color);
@@ -259,61 +273,13 @@ textarea:focus {
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
-
-#copyBtn:hover {
-    background-color: #3a3d41;
-    color: var(--text-color);
-}
-
-#downloadBtn, #shareBtn, #settingsBtn, #copyCodeBtn {
-    background-color: var(--secondary-surface-color);
-    color: var(--secondary-text-color);
-    border: 1px solid var(--border-color);
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-#downloadBtn:hover, #shareBtn:hover, #settingsBtn:hover, #copyCodeBtn:hover {
-    background-color: #3a3d41;
-    color: var(--text-color);
-}
-
 .action-buttons {
     display: grid;
     grid-template-columns: 1fr auto auto;
     gap: 1rem;
 }
 
-#killBtn {
-    background-color: #c62828; /* Red */
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#killBtn:hover:not(:disabled) {
-    background-color: #b71c1c; /* Darker Red */
-}
-
-#killBtn:disabled {
-    background-color: #555;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-#clearBtn {
-    background-color: var(--secondary-surface-color);
-    color: var(--secondary-text-color);
-    border: 1px solid var(--border-color);
+.action-btn {
     padding: 12px 20px;
     text-align: center;
     font-size: 1rem;
@@ -321,40 +287,42 @@ textarea:focus {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid transparent;
 }
 
-#clearBtn:hover {
-    background-color: #3a3d41;
-    color: var(--text-color);
-}
-
-#runBtn {
+.action-btn.primary {
     background-color: var(--accent-color);
     color: white;
-    border: none;
-    padding: 12px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 1rem;    
-    font-weight: 600;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
-
-#runBtn:hover {
+.action-btn.primary:hover:not(:disabled) {
     background-color: var(--accent-hover-color);
 }
 
-#runBtn:disabled {
-    background-color: #555;
-    cursor: not-allowed;
+.action-btn.danger {
+    background-color: #c62828;
+    color: white;
+}
+.action-btn.danger:hover:not(:disabled) {
+    background-color: #b71c1c;
 }
 
-#copyBtn:disabled, #shareBtn:disabled, #copyCodeBtn:disabled {
+.action-btn.secondary {
+    background-color: var(--secondary-surface-color);
+    color: var(--secondary-text-color);
+    border-color: var(--border-color);
+}
+.action-btn.secondary:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+    color: var(--text-color);
+}
+
+.action-btn:disabled, .editor-control-btn:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.action-btn.primary:disabled, .action-btn.danger:disabled {
+    background-color: #555;
 }
 
 /* Spinner Styles */

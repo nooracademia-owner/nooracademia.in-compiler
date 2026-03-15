@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C++ Compiler</title>
+    <title>Online Compiler</title>
     <link rel="icon" href="https://nooracademia-owner.github.io/noor-vault-assets/nooracademia/static/logo/favicon/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="https://nooracademia-owner.github.io/noor-vault-assets/nooracademia/static/logo/icon/icon.png">
     <link rel="stylesheet" href="https://nooracademia-owner.github.io/noor-vault-assets/nooracademia/static/fonts.css">
@@ -48,10 +48,11 @@
             <div class="editor-header">
                 <h2>Source Code</h2>
                 <div class="editor-controls">
-                    <button id="copyCodeBtn" title="Copy Source Code">Copy</button>
-                    <button id="settingsBtn" title="Editor Settings">Settings</button>
-                    <button id="shareBtn" title="Create a shareable link">Share</button>
-                    <button id="downloadBtn" title="Download Code">Download</button>
+                    <button id="copyCodeBtn" class="editor-control-btn" title="Copy Source Code">Copy</button>
+                    <button id="formatCodeBtn" class="editor-control-btn" title="Format Code">Format</button>
+                    <button id="settingsBtn" class="editor-control-btn" title="Editor Settings">Settings</button>
+                    <button id="shareBtn" class="editor-control-btn" title="Create a shareable link">Share</button>
+                    <button id="downloadBtn" class="editor-control-btn" title="Download Code">Download</button>
                     <select id="languageSelector">
                         <option value="cpp">C++</option>
                         <option value="c">C</option>
@@ -66,9 +67,9 @@
                 <textarea id="stdin-input" spellcheck="false"></textarea>
             </div>
             <div class="action-buttons">
-                <button id="runBtn">Run Program</button>
-                <button id="killBtn" disabled>Kill</button>
-                <button id="clearBtn">Clear</button>
+                <button id="runBtn" class="action-btn primary">Run Program</button>
+                <button id="killBtn" class="action-btn danger" disabled>Kill</button>
+                <button id="clearBtn" class="action-btn secondary">Clear</button>
             </div>
             <div class="output-container">
                 <div id="spinner" class="spinner-overlay">
@@ -76,7 +77,7 @@
                 </div>
                 <div class="output-header">
                     <h2>Output</h2>
-                    <button id="copyBtn" title="Copy to Clipboard">Copy</button>
+                    <button id="copyBtn" class="editor-control-btn" title="Copy to Clipboard">Copy</button>
                 </div>
                 <pre id="output" aria-live="polite"></pre>
             </div>
