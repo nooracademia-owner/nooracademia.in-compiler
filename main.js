@@ -1,7 +1,6 @@
 let worker;
 let executionTimeoutId = null;
 const appLoader = document.getElementById('app-loader');
-const EXECUTION_TIMEOUT = 60000; // 1 minute
 const outputBox = document.getElementById('output');
 const stdinBox = document.getElementById('stdin-input');
 const runButton = document.getElementById('runBtn');
@@ -17,6 +16,7 @@ const closeSettingsButton = document.getElementById('closeSettingsBtn');
 const editorThemeSelector = document.getElementById('editorThemeSelector');
 const fontSizeInput = document.getElementById('fontSizeInput');
 const resetSettingsButton = document.getElementById('resetSettingsBtn');
+const timeoutInput = document.getElementById('timeoutInput');
 const menuToggle = document.getElementById('menuToggle');
 const nav = document.querySelector('nav');
 const killButton = document.getElementById('killBtn');
@@ -98,10 +98,12 @@ const LS_LANG_KEY = 'noor-compiler-language';
 const LS_STDIN_KEY = 'noor-compiler-stdin';
 const LS_THEME_KEY = 'noor-compiler-theme';
 const LS_FONT_SIZE_KEY = 'noor-compiler-font-size';
+const LS_TIMEOUT_KEY = 'noor-compiler-timeout';
 
 // Default settings values
 const DEFAULT_THEME = 'vs-dark';
 const DEFAULT_FONT_SIZE = 14;
+const DEFAULT_TIMEOUT = 60;
 
 // Helper functions for URL-safe Base64 encoding/decoding with UTF-8 support
 function encode(str) {
@@ -170,10 +172,12 @@ require(['vs/editor/editor.main'], function () {
     // Load editor settings
     const savedTheme = localStorage.getItem(LS_THEME_KEY) || DEFAULT_THEME;
     const savedFontSize = parseInt(localStorage.getItem(LS_FONT_SIZE_KEY) || DEFAULT_FONT_SIZE, 10);
+    const savedTimeout = parseInt(localStorage.getItem(LS_TIMEOUT_KEY) || DEFAULT_TIMEOUT, 10);
 
     // Apply saved settings to the settings modal inputs
     editorThemeSelector.value = savedTheme;
     fontSizeInput.value = savedFontSize;
+    timeoutInput.value = savedTimeout;
 
     editor = monaco.editor.create(document.getElementById('editor'), {
         value: initialCode,
@@ -226,10 +230,18 @@ require(['vs/editor/editor.main'], function () {
         }
     });
 
+    timeoutInput.addEventListener('input', () => {
+        const newTimeout = parseInt(timeoutInput.value, 10);
+        if (newTimeout >= 1 && newTimeout <= 120) {
+            localStorage.setItem(LS_TIMEOUT_KEY, newTimeout);
+        }
+    });
+
     resetSettingsButton.addEventListener('click', () => {
         // Update UI
         editorThemeSelector.value = DEFAULT_THEME;
         fontSizeInput.value = DEFAULT_FONT_SIZE;
+        timeoutInput.value = DEFAULT_TIMEOUT;
 
         // Update editor
         editor.updateOptions({ theme: DEFAULT_THEME, fontSize: DEFAULT_FONT_SIZE });
@@ -237,6 +249,7 @@ require(['vs/editor/editor.main'], function () {
         // Clear from localStorage
         localStorage.removeItem(LS_THEME_KEY);
         localStorage.removeItem(LS_FONT_SIZE_KEY);
+        localStorage.removeItem(LS_TIMEOUT_KEY);
     });
 
     // --- Mobile Menu Logic ---
@@ -260,9 +273,12 @@ require(['vs/editor/editor.main'], function () {
         killButton.disabled = false;
         spinner.classList.add('visible'); // Show spinner
 
+        const timeoutSeconds = parseInt(localStorage.getItem(LS_TIMEOUT_KEY) || DEFAULT_TIMEOUT, 10);
+        const executionTimeoutMs = timeoutSeconds * 1000;
+
         executionTimeoutId = setTimeout(() => {
-            terminateExecution("\n--- Execution timed out (60s). Potential infinite loop detected. ---\n");
-        }, EXECUTION_TIMEOUT);
+            terminateExecution(`\n--- Execution timed out (${timeoutSeconds}s). Potential infinite loop detected. ---\n`);
+        }, executionTimeoutMs);
 
         const code = editor.getValue(); // Use getValue() for Monaco Editor
 
